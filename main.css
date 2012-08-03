@@ -1,0 +1,95 @@
+@import url(http://fonts.googleapis.com/css?family=Tinos:700);
+
+body {
+  background-color: #F2F2F2;
+}
+
+#content {
+  width: 540px;
+  margin: 0 auto;
+  padding: 0;
+  background: white;
+  border: 4px solid #DBDBDB;
+  border-radius: 10px;
+}
+
+#title {
+  margin-top: 5em;
+  color: black;
+  text-align: center;
+  text-transform: uppercase;
+}
+#title .the {
+  font-size: 12px;
+  border-top: 1px solid black;
+  border-bottom: 1px solid black;
+  font-weight: bold;
+  vertical-align: middle;
+  position: relative;
+  bottom: 12px;
+  left: 4px;
+}
+#title .name {
+  font-size: 36px;
+  font-weight: bold;
+}
+.rule {
+  width: 720px;
+  margin: 8px auto;
+  height: 2px;
+  border-top: 1px solid black;
+  border-bottom: 1px solid black;
+}
+
+#contacts {
+  padding: 40px 0;
+  margin: 0;
+}
+#contacts li {
+  float:left;
+  width: 25%;
+  list-style-type: none;
+  text-align: center;
+  margin: 0;
+  padding: 0;
+}
+#contacts .imgBox {
+  height: 75px;
+}
+#contacts .name {
+  margin: 0;
+  padding: 0;
+  font-weight: bold;
+  font-family: sans-serif;
+}
+#contacts a {
+  color: #BBBBBB;
+  /* #E5E5E5 #DBDBDB #D2D2D2 */
+  text-decoration: none;
+}
+#contacts img{
+  border: 0;
+  margin: 0;
+  padding: 0;
+}
+.mail {
+  height: 62px;
+  position: relative;
+  top: -3px;
+}
+.linkedin {
+  height: 55px;
+}
+.facebook {
+  height: 59px;
+  position: relative;
+  top: -2px;
+}
+.github {
+  height: 57px;
+  position: relative;
+  top: -1px;
+}
+.clear {
+  clear: both;
+}
