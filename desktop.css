@@ -1,0 +1,16 @@
+#title .the {
+  font-size: 18px;
+  bottom: 5px;
+}
+#title .name {
+  font-size: 36px;
+}
+#content {
+  width: 540px;
+}
+.row {
+  display: inline-block;
+}
+.row:first-child {
+  margin-bottom: 0;
+}
