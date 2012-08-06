@@ -45,7 +45,7 @@ body {
 }
 .sprite {
   display: inline-block;
-	background: url(sprites.png) no-repeat;
+	background: url(/images/sprites.png) no-repeat;
 	width: 55px;
 	height: 55px;
 }
@@ -60,4 +60,8 @@ body {
 }
 .facebook {
 	background-position: 0 -168px ;
+}
+#note {
+  text-align: left;
+  padding: 0 1em;
 }
