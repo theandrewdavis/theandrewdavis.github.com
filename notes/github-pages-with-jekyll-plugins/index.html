@@ -5,6 +5,7 @@
   <meta name="viewport" content="width=device-width, initial-scale=1" />
   <title>GitHub Pages with Jekyll plugins</title>
   
+  <link href="/images/kiwi.png" rel="icon">
   <link href="/css/main.css" media="screen, handheld" rel="stylesheet" type="text/css" />
   <link href="/css/desktop.css" media="screen and (min-width: 540px)" rel="stylesheet" type="text/css" />
   <!--[if (lt IE 9)&(!IEMobile)]>
@@ -55,7 +56,7 @@
   <span class="c1"># Commit the changes and push to github</span>
   <span class="sx">%x[git add --all]</span>
   <span class="sx">%x[git commit -m &quot;</span><span class="si">#{</span><span class="n">args</span><span class="o">.</span><span class="n">message</span> <span class="o">||</span> <span class="s1">&#39;Update&#39;</span><span class="si">}</span><span class="sx">&quot;]</span>
-  <span class="c1"># %x[git push github master]</span>
+  <span class="sx">%x[git push github master]</span>
 
   <span class="c1"># Return to the source branch and get changes back from the stash</span>
   <span class="sx">%x[git checkout source]</span>
