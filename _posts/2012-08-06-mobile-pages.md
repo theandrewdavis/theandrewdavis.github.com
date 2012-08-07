@@ -7,14 +7,14 @@ title: Mobile Pages
 
 The viewport is the window through which you view the page's content. It constrains the height and width of the html element, the page's top level element.
 
-Since most sites are designed for the desktop, mobile devices use a larger viewport (iOS uses 980px) and scale the page down. If we're optimizing the page for mobile sites, we can tell the browser not to do this with a meta viewpoint tag:
+Since most sites are designed for the desktop, mobile devices use a larger viewport (iOS uses 980px) and scale the page down. If we're optimizing the page for mobile sites, we can tell the browser not to do this with a meta viewport tag:
 
 {% highlight html %}
 <meta name="viewport"
     content="width=device-width, initial-scale=1" />
 {% endhighlight %}
 
-So the viewport is set to the device's width and not scaled. Now, according to the principles of responsive design, we design the page for mobile and then add style for the desktop.
+So the viewport is set to the device's width and not scaled. Now, according to the principles of responsive design, we design the page for mobile and then add styles for the desktop.
 
 To isolate desktop environments, we use media queries:
 
@@ -25,7 +25,7 @@ To isolate desktop environments, we use media queries:
     rel="stylesheet" type="text/css" />
 {% endhighlight %}
 
-Since IE 8 and below don't support media queries, we can use the following workaround to load the desktop style in older IE browsers (which are all desktop browsers).
+Since IE 8 and below don't support media queries, we can use the following workaround to load the desktop stylesheet in older IE browsers (which are all desktop browsers).
 
 {% highlight html %}
 <!--[if (lt IE 9)&(!IEMobile)]>
@@ -33,7 +33,7 @@ Since IE 8 and below don't support media queries, we can use the following worka
 <![endif]-->
 {% endhighlight %}
 
-The desktop style can override properties in the mobile style. For exmaple, to stretch a content div across the whole screen on mobile but cap its width on the desktop, we can use the following in our mobile style:
+The desktop stylesheet can override properties in the mobile stylesheet. For exmaple, to stretch a content div across the whole screen on mobile but cap its width on the desktop, we can use the following in our mobile stylesheet:
   
 {% highlight css %}
 #content {
@@ -41,7 +41,7 @@ The desktop style can override properties in the mobile style. For exmaple, to s
 }
 {% endhighlight %}
 
-Then we override it in the desktop style:
+Then we override it in the desktop stylesheet:
 
 {% highlight css %}
 #content {
