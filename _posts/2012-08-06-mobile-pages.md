@@ -9,50 +9,45 @@ The viewport is the window through which you view the page's content. It constra
 
 Since most sites are designed for the desktop, mobile devices use a larger viewport (iOS uses 980px) and scale the page down. If we're optimizing the page for mobile sites, we can tell the browser not to do this with a meta viewpoint tag:
 
-{:lang='html'}
-~~~
+{% highlight html %}
 <meta name="viewport"
     content="width=device-width, initial-scale=1" />
-~~~
+{% endhighlight %}
 
 So the viewport is set to the device's width and not scaled. Now, according to the principles of responsive design, we design the page for mobile and then add style for the desktop.
 
 To isolate desktop environments, we use media queries:
 
-{:lang='html'}
-~~~
+{% highlight html %}
 <link href="main.css" media="screen, handheld"
     rel="stylesheet" type="text/css" />
 <link href="desktop.css" media="screen and (min-width: 540px)"
     rel="stylesheet" type="text/css" />
-~~~
+{% endhighlight %}
 
 Since IE 8 and below don't support media queries, we can use the following workaround to load the desktop style in older IE browsers (which are all desktop browsers).
 
-{:lang='html'}
-~~~
+{% highlight html %}
 <!--[if (lt IE 9)&(!IEMobile)]>
 <link href="desktop.css" rel="stylesheet" type="text/css" />
 <![endif]-->
-~~~
+{% endhighlight %}
 
 The desktop style can override properties in the mobile style. For exmaple, to stretch a content div across the whole screen on mobile but cap its width on the desktop, we can use the following in our mobile style:
   
-{:lang='css'}
-~~~
+{% highlight css %}
 #content {
   width: 100%;
 }
-~~~
+{% endhighlight %}
 
 Then we override it in the desktop style:
 
-{:lang='css'}
-~~~
+{% highlight css %}
 #content {
   width: 540px;
 }
-~~~
+{% endhighlight %}
 
 You can see this technique on my [landing page](https://github.com/theandrewdavis/theandrewdavis.github.com).
 

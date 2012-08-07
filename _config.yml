@@ -1,7 +1,2 @@
 permalink: /notes/:title
-markdown: kramdown
-kramdown:
-  use_coderay: true
-
-  coderay:
-    coderay_line_numbers: ''
+pygments: true
