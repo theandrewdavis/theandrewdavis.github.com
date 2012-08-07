@@ -1,0 +1,78 @@
+<!DOCTYPE html>
+<html>
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1" />
+  <title>GitHub Pages with Jekyll plugins</title>
+  
+  <link href="/css/main.css" media="screen, handheld" rel="stylesheet" type="text/css" />
+  <link href="/css/desktop.css" media="screen and (min-width: 540px)" rel="stylesheet" type="text/css" />
+  <!--[if (lt IE 9)&(!IEMobile)]>
+  <link href="/css/desktop.css" rel="stylesheet" type="text/css" />
+  <![endif]-->
+  <link href="/css/syntax.css" rel="stylesheet" type="text/css" />
+</head>
+<body>
+
+  <div id="title">
+    <span class="the">the</span>
+    <span class="name">Andrew Davis</span>
+  </div>
+
+  <div id="content">
+    <div id="note">
+  <h3>GitHub Pages with Jekyll plugins</h3>
+  <p>I&#39;m using <a href="http://pages.github.com/">GitHub Pages</a> for my personal <a href="https://github.com/theandrewdavis/theandrewdavis.github.com">landing page</a> and creating these notes from makdown with its <a href="http://jekyllrb.com/">Jekyll</a> integration. I wanted to use the <a href="https://github.com/nono/Jekyll-plugins">RedCarpet2 plugin</a> which allows markdown code fences, but GitHub Pages doesn&#39;t allow <a href="https://github.com/mojombo/jekyll/wiki/Plugins">Jekyll plugins</a>.</p>
+
+<p>To get around this restriction, I generate the site locally and publish the result. To accomplish this, I have two branches in the repo: a <code>source</code> branch that contains the Jekyll source files and the <code>master</code> branch that contains the generated site.</p>
+
+<p>When I&#39;m writing a note, I edit the <code>source</code> branch and run <code>jekyll --server</code> to test out the results locally. Then when I&#39;m ready to publish the results to GitHub, I can copy the contents of <code>_site</code> directory to the <code>master</code> branch, commit, and push the change. To make this process easier, I wrote this rake task:</p>
+<div class="highlight"><pre><code class="ruby"><span class="n">desc</span> <span class="s2">&quot;Generate site with Jekyll and publish it from master branch&quot;</span>
+<span class="n">task</span> <span class="ss">:publish</span><span class="p">,</span> <span class="o">[</span><span class="ss">:message</span><span class="o">]</span> <span class="k">do</span> <span class="o">|</span><span class="n">task</span><span class="p">,</span> <span class="n">args</span><span class="o">|</span>
+  <span class="c1"># Check that the command is called from the source branch</span>
+  <span class="n">branch</span> <span class="o">=</span> <span class="sx">%x[git symbolic-ref HEAD]</span><span class="o">.</span><span class="n">strip</span>
+  <span class="nb">abort</span> <span class="s2">&quot;Please checkout the source branch first&quot;</span> <span class="k">unless</span> <span class="n">branch</span> <span class="o">==</span> <span class="s1">&#39;refs/heads/source&#39;</span>
+
+  <span class="c1"># Stash changes if the index is dirty or there are unstaged files</span>
+  <span class="n">clean</span> <span class="o">=</span> <span class="sx">%x[git status --porcelain]</span><span class="o">.</span><span class="n">strip</span><span class="o">.</span><span class="n">empty?</span>
+  <span class="sx">%x[git stash --include-untracked]</span> <span class="k">unless</span> <span class="n">clean</span>
+
+  <span class="c1"># Generate the site with jekyll</span>
+  <span class="sx">%x[jekyll tmp]</span>
+
+  <span class="c1"># Switch to the master branch</span>
+  <span class="sx">%x[git checkout master]</span>
+  <span class="n">branch</span> <span class="o">=</span> <span class="sx">%x[git symbolic-ref HEAD]</span><span class="o">.</span><span class="n">strip</span>
+  <span class="nb">abort</span> <span class="s2">&quot;Couldn&#39;t switch to the master branch&quot;</span> <span class="k">unless</span> <span class="n">branch</span> <span class="o">==</span> <span class="s1">&#39;refs/heads/master&#39;</span>
+
+  <span class="c1"># Copy the generated site to the master branch</span>
+  <span class="sx">%x[ls | grep --invert-match tmp | xargs rm -rf]</span>
+  <span class="sx">%x[cp -r tmp/* .]</span>
+  <span class="sx">%x[rm -rf tmp]</span>
+
+  <span class="c1"># Commit the changes and push to github</span>
+  <span class="sx">%x[git add --all]</span>
+  <span class="sx">%x[git commit -m &quot;</span><span class="si">#{</span><span class="n">args</span><span class="o">.</span><span class="n">message</span> <span class="o">||</span> <span class="s1">&#39;Update&#39;</span><span class="si">}</span><span class="sx">&quot;]</span>
+  <span class="c1"># %x[git push github master]</span>
+
+  <span class="c1"># Return to the source branch and get changes back from the stash</span>
+  <span class="sx">%x[git checkout source]</span>
+  <span class="sx">%x[git stash pop]</span> <span class="k">unless</span> <span class="n">clean</span>
+<span class="k">end</span>
+</code></pre>
+</div>
+<p>So now I can publish changes by running <code>rake publish[&quot;Commit message&quot;]</code></p>
+
+<h3 id="toc_1">References</h3>
+
+<ul>
+<li><a href="https://github.com/nono/Jekyll-plugins">Jekyll RedCarpet2 Plugin</a></li>
+<li><a href="http://www.madhur.co.in/blog/2011/09/01/runningjekyllwindows.html">Running Jekyll on Windows</a></li>
+<li><a href="http://stackoverflow.com/questions/10593182/dealing-with-jekyll-and-git">StackOverflow: Inspiration for publish task</a></li>
+</ul>
+
+</div>
+  </div>
+
+</body>
+</html>

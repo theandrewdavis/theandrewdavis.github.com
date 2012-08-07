@@ -1,0 +1,70 @@
+<!DOCTYPE html>
+<html>
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1" />
+  <title>Mobile Pages</title>
+  
+  <link href="/css/main.css" media="screen, handheld" rel="stylesheet" type="text/css" />
+  <link href="/css/desktop.css" media="screen and (min-width: 540px)" rel="stylesheet" type="text/css" />
+  <!--[if (lt IE 9)&(!IEMobile)]>
+  <link href="/css/desktop.css" rel="stylesheet" type="text/css" />
+  <![endif]-->
+  <link href="/css/syntax.css" rel="stylesheet" type="text/css" />
+</head>
+<body>
+
+  <div id="title">
+    <span class="the">the</span>
+    <span class="name">Andrew Davis</span>
+  </div>
+
+  <div id="content">
+    <div id="note">
+  <h3>Mobile Pages</h3>
+  <p>The viewport is the window through which you view the page&#39;s content. It constrains the height and width of the html element, the page&#39;s top level element.</p>
+
+<p>Since most sites are designed for the desktop, mobile devices use a larger viewport (iOS uses 980px) and scale the page down. If we&#39;re optimizing the page for mobile sites, we can tell the browser not to do this with a meta viewport tag:</p>
+<div class="highlight"><pre><code class="html"><span class="nt">&lt;meta</span> <span class="na">name=</span><span class="s">&quot;viewport&quot;</span> <span class="na">content=</span><span class="s">&quot;width=device-width, initial-scale=1&quot;</span> <span class="nt">/&gt;</span>
+</code></pre>
+</div>
+<p>So the viewport is set to the device&#39;s width and not scaled. Now, according to the principles of responsive design, we design the page for mobile and then add styles for the desktop.</p>
+
+<p>To isolate desktop environments, we use media queries:</p>
+<div class="highlight"><pre><code class="html"><span class="nt">&lt;link</span> <span class="na">href=</span><span class="s">&quot;main.css&quot;</span> <span class="na">media=</span><span class="s">&quot;screen, handheld&quot;</span> <span class="na">rel=</span><span class="s">&quot;stylesheet&quot;</span> <span class="na">type=</span><span class="s">&quot;text/css&quot;</span> <span class="nt">/&gt;</span>
+<span class="nt">&lt;link</span> <span class="na">href=</span><span class="s">&quot;desktop.css&quot;</span> <span class="na">media=</span><span class="s">&quot;screen and (min-width: 540px)&quot;</span> <span class="na">rel=</span><span class="s">&quot;stylesheet&quot;</span> <span class="na">type=</span><span class="s">&quot;text/css&quot;</span> <span class="nt">/&gt;</span>
+</code></pre>
+</div>
+<p>Since IE 8 and below don&#39;t support media queries, we can use the following workaround to load the desktop stylesheet in older IE browsers (which are all desktop browsers).</p>
+<div class="highlight"><pre><code class="html"><span class="c">&lt;!--[if (lt IE 9)&amp;(!IEMobile)]&gt;</span>
+<span class="c">&lt;link href=&quot;desktop.css&quot; rel=&quot;stylesheet&quot; type=&quot;text/css&quot; /&gt;</span>
+<span class="c">&lt;![endif]--&gt;</span>
+</code></pre>
+</div>
+<p>The desktop stylesheet can override properties in the mobile stylesheet. For exmaple, to stretch a content div across the whole screen on mobile but cap its width on the desktop, we can use the following in our mobile stylesheet:</p>
+<div class="highlight"><pre><code class="css"><span class="nf">#content</span> <span class="p">{</span>
+  <span class="k">width</span><span class="o">:</span> <span class="m">100</span><span class="o">%</span><span class="p">;</span>
+<span class="p">}</span>
+</code></pre>
+</div>
+<p>Then we override it in the desktop stylesheet:</p>
+<div class="highlight"><pre><code class="css"><span class="nf">#content</span> <span class="p">{</span>
+  <span class="k">width</span><span class="o">:</span> <span class="m">540px</span><span class="p">;</span>
+<span class="p">}</span>
+</code></pre>
+</div>
+<p>You can see this technique on my <a href="https://github.com/theandrewdavis/theandrewdavis.github.com">landing page</a>.</p>
+
+<h3 id="toc_0">References</h3>
+
+<ul>
+<li><a href="http://www.html5rocks.com/en/mobile/responsivedesign/">HTML5Rocks: Creating a Mobile-First Responsive Web Design</a></li>
+<li><a href="https://developer.apple.com/library/safari/#documentation/AppleApplications/Reference/SafariWebContent/UsingtheViewport/UsingtheViewport.html">Apple: Configuring the Viewport</a></li>
+<li><a href="https://developer.mozilla.org/en-US/docs/Mobile/Viewport_meta_tag">Mozilla: Using the viewport meta tag to control layout on mobile browsers</a></li>
+</ul>
+
+</div>
+  </div>
+
+</body>
+</html>
