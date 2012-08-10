@@ -1,0 +1,131 @@
+<!DOCTYPE html>
+<html>
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1" />
+  <title>Using Less on Windows</title>
+  
+  <link href="/images/kiwi.png" rel="icon">
+  <link href="/css/main.css" media="screen, handheld" rel="stylesheet" type="text/css" />
+  <link href="/css/desktop.css" media="screen and (min-width: 540px)" rel="stylesheet" type="text/css" />
+  <!--[if (lt IE 9)&(!IEMobile)]>
+  <link href="/css/desktop.css" rel="stylesheet" type="text/css" />
+  <![endif]-->
+  <link href="/css/syntax.css" rel="stylesheet" type="text/css" />
+</head>
+<body>
+
+  <div id="title">
+    <span class="the">the</span>
+    <span class="name">Andrew Davis</span>
+  </div>
+
+  <div id="content">
+    <div id="note">
+  <h3>Using Less on Windows</h3>
+  <p>Writing plain CSS can quickly become tedious and unreadable, especially when you&#39;re dealing with browser prefixes. The <a href="http://lesscss.org">Less CSS Compiler</a> lets you use mixins to ease the burden, along with lots of other great features like nested rules and color functions. Since <a href="https://github.com/twitter/bootstrap/">Twitter Bootstrap</a> uses Less, you can also use it to extract the CSS for whichever portion you&#39;re using - often just buttons for my projects.</p>
+
+<p>Less is now written in Javascript, so you can compile it on the server with node.js or it can be included in your HTML to allow the browser to compile it. For my purposes, I wanted to compile the Less stylesheet and serve static CSS.</p>
+
+<p>Ruby&#39;s <a href="https://rubygems.org/gems/less">less gem</a> won&#39;t install on Windows because of its dependency on <a href="https://github.com/cowboyd/therubyracer">therubyracer</a>, so I installed the node.js less package with <code>npm install less</code> which provides the <code>lessc</code> binary.</p>
+
+<p>I also wanted to take advantage of <a href="https://github.com/guard/guard-less">guard-less</a> so that my Less stylesheets would compile into CSS whenever I changed the file, but ran into another Windows compatibility issue. Fortunately I was able to get similar behavior with the <a href="https://github.com/guard/listen">listen gem</a> (which guard is based on). Using this Rakefile I can run <code>rake less</code> to compile my <code>main.less</code> stylesheet or I can run <code>rake guard</code> to automatically recompile whenever a file changes:</p>
+<div class="highlight"><pre><code class="ruby"><span class="nb">require</span> <span class="s1">&#39;listen&#39;</span>
+
+<span class="no">LESSC</span> <span class="o">=</span> <span class="no">File</span><span class="o">.</span><span class="n">join</span><span class="p">(</span><span class="no">ENV</span><span class="o">[</span><span class="s1">&#39;TOOLS&#39;</span><span class="o">]</span><span class="p">,</span> <span class="s1">&#39;nodejs&#39;</span><span class="p">,</span> <span class="s1">&#39;node_modules&#39;</span><span class="p">,</span> <span class="s1">&#39;.bin&#39;</span><span class="p">,</span> <span class="s1">&#39;lessc&#39;</span><span class="p">)</span>
+<span class="no">CSS_DIR</span> <span class="o">=</span> <span class="no">File</span><span class="o">.</span><span class="n">join</span><span class="p">(</span><span class="no">File</span><span class="o">.</span><span class="n">dirname</span><span class="p">(</span><span class="bp">__FILE__</span><span class="p">),</span> <span class="s1">&#39;css&#39;</span><span class="p">)</span>
+<span class="no">LESS_FILE</span> <span class="o">=</span> <span class="no">File</span><span class="o">.</span><span class="n">join</span><span class="p">(</span><span class="no">CSS_DIR</span><span class="p">,</span> <span class="s1">&#39;main.less&#39;</span><span class="p">)</span>
+
+<span class="n">task</span> <span class="ss">:less</span> <span class="k">do</span>
+  <span class="n">lessc</span><span class="p">(</span><span class="no">LESS_FILE</span><span class="p">)</span>
+<span class="k">end</span>
+
+<span class="n">task</span> <span class="ss">:guard</span> <span class="k">do</span>
+  <span class="no">Listen</span><span class="o">.</span><span class="n">to</span><span class="p">(</span><span class="no">CSS_DIR</span><span class="p">,</span> <span class="n">filter</span><span class="p">:</span> <span class="sr">/\.less$/</span><span class="p">,</span> <span class="n">force_polling</span><span class="p">:</span> <span class="kp">true</span><span class="p">)</span> <span class="k">do</span>
+    <span class="n">lessc</span><span class="p">(</span><span class="no">LESS_FILE</span><span class="p">)</span>
+  <span class="k">end</span>
+<span class="k">end</span>
+
+<span class="k">def</span> <span class="nf">lessc</span><span class="p">(</span><span class="n">input</span><span class="p">)</span>
+  <span class="n">output</span> <span class="o">=</span> <span class="n">input</span><span class="o">.</span><span class="n">gsub</span><span class="p">(</span><span class="sr">/\.less$/</span><span class="p">,</span> <span class="s1">&#39;.css&#39;</span><span class="p">)</span>
+  <span class="sb">`</span><span class="si">#{</span><span class="no">LESSC</span><span class="si">}</span><span class="sb"> </span><span class="si">#{</span><span class="n">input</span><span class="si">}</span><span class="sb"> &gt; </span><span class="si">#{</span><span class="n">output</span><span class="si">}</span><span class="sb">`</span>
+<span class="k">end</span>
+</code></pre>
+</div>
+<p>So far I&#39;m very pleased with Less. Here&#39;s my favorite features:</p>
+
+<h4 id="toc_2">Mixins</h4>
+
+<p>There&#39;s two big wins here. First, mixins for browser prefixes keep your code DRY, so you can write:</p>
+<div class="highlight"><pre><code class="css"><span class="nf">#content</span> <span class="p">{</span>
+    <span class="o">.</span><span class="k">border</span><span class="o">-</span><span class="n">radius</span><span class="p">(</span><span class="m">6px</span><span class="p">);</span>
+<span class="p">}</span>
+<span class="nc">.alert</span> <span class="p">{</span>
+    <span class="o">.</span><span class="k">border</span><span class="o">-</span><span class="n">radius</span><span class="p">(</span><span class="m">3px</span><span class="p">);</span>
+<span class="p">}</span>
+</code></pre>
+</div>
+<p>instead of</p>
+<div class="highlight"><pre><code class="css"><span class="nf">#content</span> <span class="p">{</span>
+  <span class="o">-</span><span class="n">moz</span><span class="o">-</span><span class="k">border</span><span class="o">-</span><span class="n">radius</span><span class="o">:</span> <span class="m">6px</span><span class="p">;</span>
+  <span class="o">-</span><span class="n">webkit</span><span class="o">-</span><span class="k">border</span><span class="o">-</span><span class="n">radius</span><span class="o">:</span> <span class="m">6px</span><span class="p">;</span>
+  <span class="k">border</span><span class="o">-</span><span class="n">radius</span><span class="o">:</span> <span class="m">6px</span><span class="p">;</span>
+<span class="p">}</span>
+<span class="nc">.alert</span> <span class="p">{</span>
+  <span class="o">-</span><span class="n">moz</span><span class="o">-</span><span class="k">border</span><span class="o">-</span><span class="n">radius</span><span class="o">:</span> <span class="m">3px</span><span class="p">;</span>
+  <span class="o">-</span><span class="n">webkit</span><span class="o">-</span><span class="k">border</span><span class="o">-</span><span class="n">radius</span><span class="o">:</span> <span class="m">3px</span><span class="p">;</span>
+  <span class="k">border</span><span class="o">-</span><span class="n">radius</span><span class="o">:</span> <span class="m">3px</span><span class="p">;</span>
+<span class="p">}</span>
+</code></pre>
+</div>
+<p>With plain CSS, you have to add non-semantic classes to your markup (like <code>rounded-corners</code> or <code>clearfix</code>) to keep from repeating yourself, but with Less you can write these styles once and mix them in when needed.</p>
+
+<h4 id="toc_3">Nested Rules</h4>
+
+<p>These are great for keeping your styles organized. I find nested rules like this:</p>
+<div class="highlight"><pre><code class="css"><span class="nf">#expenses</span> <span class="p">{</span>
+  <span class="k">border-spacing</span><span class="o">:</span> <span class="m">0</span><span class="p">;</span>
+
+  <span class="n">tr</span> <span class="n">td</span> <span class="err">{</span>
+    <span class="k">border-top</span><span class="o">:</span> <span class="m">1px</span> <span class="k">solid</span> <span class="nb">gray</span><span class="p">;</span>
+  <span class="p">}</span>
+  <span class="nt">tr</span><span class="nd">:first-child</span> <span class="nt">td</span> <span class="p">{</span>
+    <span class="k">border-top</span><span class="o">:</span> <span class="k">none</span><span class="p">;</span>
+  <span class="p">}</span>
+<span class="err">}</span>
+</code></pre>
+</div>
+<p>much easier to visually parse than the plain CSS equivalent:</p>
+<div class="highlight"><pre><code class="css"><span class="nf">#expenses</span> <span class="p">{</span>
+  <span class="k">border-spacing</span><span class="o">:</span> <span class="m">0</span><span class="p">;</span>
+<span class="p">}</span>
+<span class="nf">#expenses</span> <span class="nt">tr</span> <span class="nt">td</span> <span class="p">{</span>
+  <span class="k">border-top</span><span class="o">:</span> <span class="m">1px</span> <span class="k">solid</span> <span class="nb">gray</span><span class="p">;</span>
+<span class="p">}</span>
+<span class="nf">#expenses</span> <span class="nt">tr</span><span class="nd">:first-child</span> <span class="nt">td</span> <span class="p">{</span>
+    <span class="k">border-top</span><span class="o">:</span> <span class="k">none</span><span class="p">;</span>
+<span class="p">}</span>
+</code></pre>
+</div>
+<h4 id="toc_4">Variables</h4>
+
+<p>With plain CSS you have to search and replace whenever you want to adjust your color pallete. With Less you can group all your colors together and change them in one place:</p>
+<div class="highlight"><pre><code class="css"><span class="k">@light</span><span class="o">:</span> <span class="nf">#F74F93</span><span class="p">;</span>
+<span class="k">@dark</span><span class="o">:</span> <span class="nf">#6E0831</span><span class="p">;</span>
+<span class="k">@gray</span><span class="o">:</span> <span class="nf">#807378</span><span class="p">;</span>
+</code></pre>
+</div>
+<p>I used Less in my <a href="">budget project</a>.</p>
+
+<h3 id="toc_5">References</h3>
+
+<ul>
+<li><a href="http://lesscss.org">Less CSS Compiler</a></li>
+<li><a href="https://github.com/guard/listen">listen gem</a></li>
+</ul>
+
+</div>
+  </div>
+
+</body>
+</html>
